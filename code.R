@@ -1,53 +1,37 @@
 library(MASS)
 
-load("who.RData")
+load("MAS223.RData")
 who_exUK <- who[who$country != "United Kingdom",]
 attach(who_exUK)
 
-cor(tobacco,life)
-cor(expenditure,life)
-cor(alcohol,life)
-cor(obesity,life)
+#cor(tobacco,life)
+#cor(expenditure,life)
+#cor(alcohol,life)
+#cor(obesity,life)
 
-lm0 <- lm(life~1)
+lm_f <- lm(life~tobacco + expenditure + alcohol + obesity)
+lm1 <- lm(life~tobacco + expenditure + alcohol)
+lm2 <- lm(life~tobacco + alcohol + obesity)
+lm3 <- lm(life~expenditure + alcohol + obesity)
+lm4 <- lm(life~tobacco + expenditure + obesity)
+lm5 <- lm(life~expenditure + obesity)
 
-lm1 <- lm(life~tobacco)
-lm2 <- lm(life~expenditure)
-lm3 <- lm(life~alcohol)
-lm4 <- lm(life~obesity)
-
-lm5 <- lm(life~tobacco + expenditure)
-lm6 <- lm(life~tobacco + alcohol)
-lm7 <- lm(life~tobacco + obesity)
-lm8 <- lm(life~expenditure + alcohol)
-lm9 <- lm(life~expenditure + obesity)
-lm10 <- lm(life~alcohol + obesity)
-
-lm11 <- lm(life~tobacco + expenditure + alcohol)
-lm12 <- lm(life~tobacco + expenditure + obesity)
-lm13 <- lm(life~tobacco + alcohol + obesity)
-lm14 <- lm(life~expenditure + alcohol + obesity)
-
-lm15 <- lm(life~tobacco + expenditure + alcohol + obesity)
-
-anova(lm15,lm11)
-anova(lm15,lm12)
-anova(lm15,lm13)
-anova(lm15,lm14)
-
-anova(lm14,lm10)
-anova(lm14,lm9)
-anova(lm14,lm8)
-
-evals <- stdres(lm14)
 par(mfrow=c(1,2))
+evals <- stdres(lm_f)
 hist(evals)
 qqnorm(evals)
 abline(0,1)
-
 ks.test(evals,pnorm,0,1)
+
+anova(lm_f,lm1)
+anova(lm_f,lm2)
+anova(lm_f,lm3)
+anova(lm_f,lm4)
+anova(lm3,lm5)
+
 uk_values <- who[who$country == "United Kingdom",]
-predictions.PI <- data.frame(predict.lm(lm14,uk_values,
-                                        interval = "prediction", level = 0.95))
+predictions.PI <- data.frame(predict.lm(lm3,uk_values,
+                                        interval = "prediction", 
+                                        level = 0.95))
 predictions.PI
 uk_values$life

@@ -8,12 +8,12 @@ knitr::opts_chunk$set(echo = TRUE)
 ```
 In 2011, UK's former Health Secretary Andrew Lansley criticized that UK's previous health-care provision did not get the results compared with other European countries. This report will assess the performance of UK healthcare in 2011 using the data from WHO, which includes life expectancy, expenditure, tobacco consumption, alcohol consumption, and obesity rates in OECD countries. After comparing the 2011 performance of UK healthcare with healthcare in other OECD countries, not enough evidence has been found to support Andrew Lansley's claim.
 
-In this report, the indicator of health experience is set to be life expectancy and there are several variables which may affect health outcomes: expenditure, tobacco consumption, alcohol consumption, and obesity rates. The relationship between life expectancy and variables stated above in OECD countries except the UK will be analyzed first, and then UK's data will be assessed to see whether it fits the other OECD countries' relation.
+In this report, the indicator of health experience is set to be life expectancy. There are several variables which may affect health outcomes: expenditure, tobacco consumption, alcohol consumption, and obesity rates. The relationship between those variables and life expectancy in OECD countries other than the UK will be analyzed first. Then UK's data will be assessed to see whether it fits that relation well.
 
-First, scatter plots of life expectancy against each independent variable (tobacco consumption, expenditure, alcohol consumption, and obesity rates) in OECD countries except the UK are produced below:
+First, to visualize the data points, scatter plots of life expectancy against each independent variable (tobacco consumption, expenditure, alcohol consumption, and obesity rates) are produced below:
 
 ```{r echo=FALSE}
-load("who.RData")
+load("MAS223.RData")
 who_exUK <- who[who$country != "United Kingdom",]
 attach(who_exUK)
 
@@ -37,7 +37,7 @@ hist(evals)
 qqnorm(evals)
 abline(0,1)
 ```
-In addition, the KS test gives the p-value 0.5668, which is large. These all suggest that the normality assumption is appropriate.
+In addition, the KS test gives the p-value 0.5636, which is large. These all suggest that the normality assumption is appropriate.
 
 We can then proceed to identify the most suitable model for the data. First, we test the null hypothesis $$H_0: \beta_4=0.$$ The full model is $M_f: y_i=\beta_0+\beta_1v_i+\beta_2w_i+\beta_3x_i+\beta_4z_i+\epsilon_i$, and the reduced model is $M_1: y_i=\beta_0+\beta_1v_i+\beta_2w_i+\beta_3x_i+\epsilon_i$. After the F-test is applied, the F-statistic is 7.3535 and the p-value is 0.01193 so there is enough evidence against the null hypothesis. We conclude that $\beta_4 \neq 0$.
 
@@ -53,7 +53,7 @@ Now we can put the data of the UK into our model to check whether the relationsh
 
 Given data about health expenditure, alcohol consumption, and obesity rates in the UK, we can predict the life expectancy in the UK according to our model. The 95% prediction interval for life expectancy in the UK is $[74.22282,82.13167]$, and the actual life expectancy is 80 which is in the prediction interval. Therefore, there is not enough evidence to show that there exists significant difference between the 2011 performance of UK healthcare and healthcare in other OECD countries.
 
-To conclude, firstly, it is find that life expectancy depends mostly on health expenditure, alcohol consumption, and obesity rates. In addition, a linear model has been fitted in this report to describe the relationship between the life expectancy and these variables in OECD countries except the UK. Furthermore, given data about health expenditure, alcohol consumption, and obesity rates in the UK, a prediction of life expectancy as well as the prediction interval has been produced, and this prediction fits the real situation well, which suggests that there is not enough evidence to support Andrew Lansley's claim i.e. UK's previous health-care provision did not get the results it should compared with other European countries.
+To conclude, firstly, it has been found that life expectancy depends mostly on health expenditure, alcohol consumption, and obesity rates. In addition, a linear model has been fitted in this report to describe the relationship between the life expectancy and those variables in OECD countries except the UK. Furthermore, given data about health expenditure, alcohol consumption, and obesity rates in the UK, a prediction of life expectancy as well as the prediction interval has been produced, and this prediction fits the real situation well, which suggests that there is not enough evidence to support Andrew Lansley's claim.
 
 #  Appendix:  R commands
 ```{r message=FALSE, warning=FALSE}
@@ -64,7 +64,7 @@ who_exUK <- who[who$country != "United Kingdom",]
 attach(who_exUK)
 ```
 ```{r fig.show='hide', echo=TRUE}
-# scatter plots of life expectancy against each independent variable.
+# Scatter plots of life expectancy against each independent variable.
 par(mfrow=c(2,2))
 plot(tobacco,life,xlab = "Tobacco consumption",ylab = "Life expectancy")
 plot(expenditure,life,xlab = "Expenditure",ylab = "Life expectancy")
@@ -84,7 +84,7 @@ qqnorm(evals)
 abline(0,1)
 ks.test(evals,pnorm,0,1)
 ```
-```{r results='hide'}
+```{r echo=TRUE}
 # F-tests.
 lm1 <- lm(life~tobacco + expenditure + alcohol)
 anova(lm_f,lm1)
@@ -106,4 +106,6 @@ predictions.PI <- data.frame(predict.lm(lm3,uk_values,
 predictions.PI
 uk_values$life
 ```
+
+No brown m&m’s
 
